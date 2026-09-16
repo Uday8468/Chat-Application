@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 
 import assets from "../assets/assets";
+import { AuthContext } from "../../context/authContext";
 
 const LoginPage = () => {
   const [currState, setCurrState] = useState("Sign up");
@@ -11,6 +12,8 @@ const LoginPage = () => {
     email: "",
     bio: "",
   });
+
+  const {login} = useContext(AuthContext);
 
   const [isSubmitted, setIsSubmitted] = useState(false);
 
@@ -27,6 +30,8 @@ const LoginPage = () => {
 
             return;
           }
+
+          login(currState=== "Sign up" ? "signup" : "login",{fullname,email,password,bio})
         }}
         className="border-2 bg-white/8 text-white border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg"
       >
