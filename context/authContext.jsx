@@ -13,7 +13,7 @@ export const AuthProvider = ({ children }) => {
   const [authUser, setAuthUser] = useState(null);
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [socket, setSocket] = useState(null);
-
+  console.log(token,"token")
   const checkAuth = async () => {
     try {
       const { data } = await axios.get("/api/auth/check");
@@ -27,6 +27,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const login = async (state, credentials) => {
+    console.log("enetered",state)
     try {
       const { data } = await axios.post(`/api/auth/${state}`, credentials);
       if (data.success) {
@@ -82,6 +83,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     if (token) {
+      console.log("entered in if")
       axios.defaults.headers.common["token"] = token;
     }
     checkAuth();

@@ -24,14 +24,14 @@ const LoginPage = () => {
       <form
         onSubmit={(e) => {
           e.preventDefault();
-
+         
           if (currState === "Sign up" && !isSubmitted) {
+              console.log("entered")
             setIsSubmitted(true);
-
             return;
           }
 
-          login(currState=== "Sign up" ? "signup" : "login",{fullname,email,password,bio})
+          login(currState=== "Sign up" ? "signup" : "login",{fullName:signUpDetails?.fullname,email:signUpDetails?.email,password:signUpDetails?.password,bio:signUpDetails?.bio})
         }}
         className="border-2 bg-white/8 text-white border-gray-500 p-6 flex flex-col gap-6 rounded-lg shadow-lg"
       >

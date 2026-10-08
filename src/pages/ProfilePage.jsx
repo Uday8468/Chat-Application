@@ -1,15 +1,30 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import assets from '../assets/assets';
+import { AuthContext } from '../../context/authContext';
 
 const ProfilePage = () => {
+  const {authUser,updateProfile} = useContext(AuthContext)
   const [selectedImg,setSelectedImg] = useState(null);
   const navigate = useNavigate();
-  const [name,setName] = useState("Martin Johnson");
-  const [bio,setBio] = useState("Hi Everyone I am using QuickChat");
+  const [name,setName] = useState(authUser?.fullName);
+  const [bio,setBio] = useState(authUser?.bio);
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    navigate("/");
+    if(!selectedImg){
+      await updateProfile({fullName:name,bio});
+      navigate("/");
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.readAsDataURL(selectedImg);
+    reader.onload = async() => {
+      const base64Img = reader.result;
+      await updateProfile({fullName:name,bio,profilePic:base64Img});
+      navigate("/");
+
+    }
 
   }
   return (
@@ -22,7 +37,7 @@ const ProfilePage = () => {
             <input type='file' id="avatar" accept='.png, ,jpg, ,jpeg' hidden onChange={(e)=> {
               setSelectedImg(e.target.files[0])
             }}/>
-            <img src={selectedImg ? URL.createObjectURL(selectedImg) : assets.avatar_icon} className={`w-12 h-12 ${selectedImg &&  "rounded-full"}`} alt=""/>
+            <img src={selectedImg ? URL.createObjectURL(selectedImg) : authUser?.profilePic || assets.avatar_icon} className={`w-12 h-12 ${(selectedImg || authUser?.profilePic) &&  "rounded-full"}`} alt=""/>
             upload image
            </label>
            <input onChange={(e) => {
@@ -35,7 +50,7 @@ const ProfilePage = () => {
            <button type='submit' className='bg-gradient-to-r from-purple-400 to-violet-600 text-white p-2 rounded-full text-lg cursor-pointer'>Save</button>
         </form>
         
-        <img className="max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10" src={assets?.logo_icon} alt=""/>
+        <img className={`${selectedImg &&  "rounded-full"} max-w-44 aspect-square rounded-full mx-10 max-sm:mt-10`} src={authUser?.profilePic || assets?.logo_icon} alt=""/>
 
        </div>
         
